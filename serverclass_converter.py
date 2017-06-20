@@ -10,6 +10,8 @@ import csv
 optarg = argparse.ArgumentParser(prog="serverclass_converter",description="Convert serverclass white/blacklist entries into CSV files.")
 optarg.add_argument('-d','--debug',help="Enable debug logging.",action="store_const",const="yes")
 optarg.add_argument('-f','--config',help="serverclass.conf configuration to process.")
+optarg.add_argument('-s','--serverclass',action="store_const",const=True,help="Output local serverclass.conf with fields in place.",default=False)
+optarg.add_argument('-a','--app',help="App name for serverclass.conf output lookup files. Defaults to app_serverclass.",default="app_serverclass")
 config = optarg.parse_args()
 
 if config.debug == "yes":
@@ -21,6 +23,13 @@ else:
 serverclass = configparser.ConfigParser()
 
 serverclass.read(config.config)
+
+if config.serverclass:
+	logging.debug("Opening serverclass.conf file for output")
+	try:
+		sc_file = open('./serverclass.conf', 'w')
+	except:
+		raise
 
 for stanza in serverclass:
 	m = re.search('^serverClass:([^:]+)$',stanza)
@@ -55,6 +64,11 @@ for stanza in serverclass:
 		logging.debug("Closing whitelist file for serverClass {}".format(base))
 		whitelist_file.close()
 
+	if config.serverclass:
+		sc_file.write("[{}]\n".format(stanza))
+		sc_file.write("whitelist.from_pathname = etc/apps/{}/lookups/{}.csv\n".format(config.app,base))
+		sc_file.write("whitelist.select_field = host\n")
+
 	while 'blacklist.'+str(bl_count) in serverclass[stanza]:
 		logging.debug("Writing out attibute blacklist.{} for serverClass {}".format(bl_count,base))
 		if not blacklist_file:
@@ -73,6 +87,12 @@ for stanza in serverclass:
 
 	if isinstance(blacklist_file,file) and not blacklist_file.closed:
 		logging.debug("Closing blacklist file for serverClass {}".format(base))
+		if config.serverclass:
+			sc_file.write("blacklist.from_pathname = etc/apps/{}/lookups/{}_blacklist.csv\n".format(config.app,base))
+			sc_file.write("blacklist.select_field = host\n")
 		blacklist_file.close()
 
+	sc_file.write("\n")
 	logging.info("Finished serverClass {}".format(base))
+
+sc_file.close()
