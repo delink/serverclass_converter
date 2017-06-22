@@ -5,8 +5,8 @@ Purpose
 -------
 
 I am converting a set of standard serverclass files into CSV-type files for
-a customer. Creating all of those CSV files manually sounded awful, so here
-we go.
+a customer. Creating all of those CSV files manually sounded awful, so this
+will do all of the tedious work for me.
 
 Usage
 -----
@@ -19,18 +19,18 @@ Usage
       -h, --help                    show this help message and exit
       -d, --debug                   Enable debug logging.
       -f CONFIG, --config CONFIG    serverclass.conf configuration to process.
-      -s, --serverclass             Output local serverclass.conf with fields in place.
       -a APP, --app APP             App name for serverclass.conf output lookup files.
                                     Defaults to app_serverclass.
 Output
 ------
 
-All of the CSV files will be output into the current directory. If you have
-a stanza "[serverClass:ServerList]", you will end up with two CSV files:
-ServerList.csv and ServerList_blacklist.csv. There will be a header row with
-the field name "host". If the -s option is supplied, a serverclass.conf file
-will be created as well with the following content. The app name is adjustable
-with the -a option.
+A valid Splunk app will be created in the current directory. It will be named
+after the --app option value. If you have a stanza "[serverClass:ServerList]",
+you will end up with two CSV files: ServerList.csv and ServerList_blacklist.csv.
+There will be a header row with the field name "host". 
+
+A serverclass.conf file will be created in local with the following content. The
+app name is the same as what is used to create the current app directory.
 
     [serverClass:ServerList]
     whitelist.from_pathname = etc/apps/app_serverclass/lookups/ServerList.csv
