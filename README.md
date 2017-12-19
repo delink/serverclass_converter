@@ -8,6 +8,12 @@ I am converting a set of standard serverclass files into CSV-type files for
 a customer. Creating all of those CSV files manually sounded awful, so this
 will do all of the tedious work for me.
 
+System Requirements
+-------------------
+
+This app was written in Python 3.x. PRs to make it work in Python 2.7 or below
+are weclome.
+
 Usage
 -----
 
