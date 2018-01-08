@@ -28,9 +28,9 @@ serverclass.read(config.config)
 
 logging.debug("Creating app directories for output.")
 try:
-	os.makedirs(config.app + '/local', 0755)
-	os.makedirs(config.app + '/lookups', 0755)
-	os.makedirs(config.app + '/metadata', 0755)
+	os.makedirs(config.app + '/local', 0o0755)
+	os.makedirs(config.app + '/lookups', 0o0755)
+	os.makedirs(config.app + '/metadata', 0o0755)
 except:
 	logging.error("Unable to create app directories.")
 	raise
@@ -113,7 +113,7 @@ for stanza in serverclass:
 		blacklist.writerow([serverclass[stanza]['blacklist.'+str(bl_count)]])
 		bl_count += 1
 
-	if isinstance(blacklist_file,file) and not blacklist_file.closed:
+	if bl_count > 0 and not blacklist_file.closed:
 		logging.debug("Writing out blacklist configuration")
 		sc_file.write("blacklist.from_pathname = etc/apps/{}/lookups/{}_blacklist.csv\n".format(config.app,base))
 		sc_file.write("blacklist.select_field = host\n")
